@@ -1,0 +1,21 @@
+# Terraform
+.terraform/
+.terraform.lock.hcl.bak
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+
+# Node / empaquetado de Lambdas
+node_modules/
+build/
+*.zip
+
+# Varios
+.DS_Store
+.env
+.vscode/
+.idea/
