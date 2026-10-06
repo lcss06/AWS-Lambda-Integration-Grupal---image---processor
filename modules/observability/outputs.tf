@@ -1,5 +1,6 @@
-# CONTRATO. Valores temporales para que "terraform validate" pase.
+# Los nombres se usan en envs/*/main.tf, no cambiarlos.
+# Valores vacios mientras se arma el modulo.
 
 output "sns_topic_arn" {
-  value = "" # TODO(Karina): aws_sns_topic.alarms.arn
+  value = "" # TODO: aws_sns_topic.alarms.arn
 }

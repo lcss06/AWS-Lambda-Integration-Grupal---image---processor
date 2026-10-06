@@ -1,6 +1,5 @@
 variable "name_prefix" {
-  description = "Prefijo de nombres, ej: image-processor-dev."
-  type        = string
+  type = string
 }
 
 variable "uploads_prefix" {
@@ -24,13 +23,13 @@ variable "processed_expiration_days" {
 }
 
 variable "crop_lambda_timeout" {
-  description = "Timeout de la Lambda crop en segundos. La visibilidad de la cola es 6 veces este valor (360 s)."
+  description = "Timeout de la lambda crop, la visibilidad de la cola es 6 veces esto"
   type        = number
   default     = 60
 }
 
 variable "max_receive_count" {
-  description = "Intentos antes de mandar el mensaje a la DLQ."
+  description = "Intentos antes de mandar a la DLQ"
   type        = number
   default     = 3
 }

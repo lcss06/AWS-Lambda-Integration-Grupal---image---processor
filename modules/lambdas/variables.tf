@@ -1,10 +1,9 @@
 variable "name_prefix" {
-  description = "Prefijo de nombres, ej: image-processor-dev."
-  type        = string
+  type = string
 }
 
 variable "lambdas_source_dir" {
-  description = "Carpeta lambdas/ del repo (contiene upload/ y crop/)."
+  description = "Ruta a la carpeta lambdas/ del repo"
   type        = string
 }
 
@@ -14,7 +13,7 @@ variable "log_retention_days" {
 }
 
 variable "private_subnet_ids" {
-  description = "Subredes privadas AZ-a y AZ-b. Una sola función con las 2 subredes = las 'réplicas' del diagrama."
+  description = "Subredes privadas donde corren las lambdas"
   type        = list(string)
 }
 
@@ -43,6 +42,6 @@ variable "processed_prefix" {
 }
 
 variable "queue_arn" {
-  description = "Cola principal, origen del trigger de la Lambda crop."
+  description = "Cola que dispara la lambda crop"
   type        = string
 }

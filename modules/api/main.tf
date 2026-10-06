@@ -1,17 +1,6 @@
-# API Gateway HTTP API (v2) — paso 1 y 2 del diagrama.
-# Cliente -> HTTPS POST /upload -> Lambda Proxy (payload 2.0) -> upload-lambda
-#
-# Notas:
-# - El endpoint por defecto de un HTTP API solo acepta HTTPS con TLS 1.2+,
-#   no hay que configurar nada para cumplir eso.
-# - El HTTP API acepta hasta 10 MB de payload, pero la Lambda solo recibe 6 MB
-#   (y el binario llega en base64, +33%), por eso la Lambda limita a ~4 MB.
-# - Los HTTP API no necesitan el rol de cuenta para CloudWatch (eso es de REST API).
-
 resource "aws_apigatewayv2_api" "this" {
   name          = "${var.name_prefix}-api"
   protocol_type = "HTTP"
-  description   = "Recibe imágenes y las envía a la Lambda upload"
 
   cors_configuration {
     allow_origins = ["*"]
@@ -27,7 +16,7 @@ resource "aws_apigatewayv2_integration" "upload" {
   integration_method     = "POST"
   integration_uri        = var.upload_invoke_arn
   payload_format_version = "2.0"
-  timeout_milliseconds   = 30000 # igual al timeout de la Lambda upload (30 s), el máximo de HTTP API
+  timeout_milliseconds   = 30000 # maximo del HTTP API, igual al timeout de la lambda
 }
 
 resource "aws_apigatewayv2_route" "upload" {
@@ -41,7 +30,6 @@ resource "aws_cloudwatch_log_group" "access" {
   retention_in_days = var.log_retention_days
 }
 
-# Stage "$default" con auto-deploy: cada cambio de rutas se publica solo
 resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.this.id
   name        = "$default"
@@ -68,9 +56,8 @@ resource "aws_apigatewayv2_stage" "default" {
   }
 }
 
-# Sin este permiso API Gateway no puede invocar la Lambda (respondería 500).
-# source_arn lo limita a esta API y a la ruta /upload.
-resource "aws_lambda_permission" "allow_apigw" {
+# permiso para que API Gateway pueda invocar la lambda, solo desde esta API y la ruta /upload
+resource "aws_lambda_permission" "apigw" {
   statement_id  = "AllowInvokeFromApiGateway"
   action        = "lambda:InvokeFunction"
   function_name = var.upload_function_name

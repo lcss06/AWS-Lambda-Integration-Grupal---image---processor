@@ -1,12 +1,12 @@
-# CONTRATO: estos nombres los usa envs/*/main.tf. No los cambies sin avisar al grupo.
-# Los valores son temporales para que "terraform validate" pase mientras se construye el módulo.
+# Los nombres se usan en envs/*/main.tf, no cambiarlos.
+# Valores vacios mientras se arma el modulo.
 
 output "bucket_name" {
-  value = "" # TODO(Karina): aws_s3_bucket.images.bucket
+  value = "" # TODO: aws_s3_bucket.images.bucket
 }
 
 output "bucket_arn" {
-  value = "" # TODO(Karina): aws_s3_bucket.images.arn
+  value = "" # TODO: aws_s3_bucket.images.arn
 }
 
 output "uploads_prefix" {
@@ -18,9 +18,9 @@ output "processed_prefix" {
 }
 
 output "queue_arn" {
-  value = "" # TODO(Karina): aws_sqs_queue.main.arn
+  value = "" # TODO: aws_sqs_queue.main.arn
 }
 
 output "dlq_name" {
-  value = "" # TODO(Karina): aws_sqs_queue.dlq.name
+  value = "" # TODO: aws_sqs_queue.dlq.name
 }

@@ -1,21 +1,17 @@
-# Este archivo es IGUAL en envs/dev, envs/qa y envs/prod.
-# Lo único que cambia entre entornos es terraform.tfvars.
-# Si lo modificas, copia el cambio a los tres.
+# mismo archivo en dev, qa y prod. Lo que cambia esta en terraform.tfvars
 
 locals {
-  name_prefix = "${var.project_name}-${var.environment}" # ej: image-processor-dev
+  name_prefix = "${var.project_name}-${var.environment}"
 }
 
 data "aws_caller_identity" "current" {}
 
-# Parte 3 (Karina): bucket S3, cola SQS, DLQ y notificación S3 -> SQS
 module "storage" {
   source = "../../modules/storage"
 
   name_prefix = local.name_prefix
 }
 
-# Parte 2 (Jhonny): VPC, subredes, NAT, endpoints y security groups
 module "network" {
   source = "../../modules/network"
 
@@ -23,10 +19,9 @@ module "network" {
   aws_region         = var.aws_region
   vpc_cidr           = var.vpc_cidr
   enable_nat_gateway = var.enable_nat_gateway
-  bucket_arn         = module.storage.bucket_arn # para la política del endpoint de S3
+  bucket_arn         = module.storage.bucket_arn
 }
 
-# Parte 3 (Karina): tópico SNS y alarma sobre la DLQ
 module "observability" {
   source = "../../modules/observability"
 
@@ -35,7 +30,6 @@ module "observability" {
   alarm_email = var.alarm_email
 }
 
-# Parte 4 (Renato): roles IAM, Lambdas upload y crop, log groups y trigger SQS
 module "lambdas" {
   source = "../../modules/lambdas"
 
@@ -54,7 +48,6 @@ module "lambdas" {
   queue_arn        = module.storage.queue_arn
 }
 
-# Parte 1 (Lucas): API Gateway HTTP API con la ruta POST /upload
 module "api" {
   source = "../../modules/api"
 
