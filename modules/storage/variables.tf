@@ -33,3 +33,9 @@ variable "max_receive_count" {
   type        = number
   default     = 3
 }
+
+variable "noncurrent_expiration_days" {
+  description = "Dias que se guardan las versiones viejas antes de borrarlas"
+  type        = number
+  default     = 7
+}
