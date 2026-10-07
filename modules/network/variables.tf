@@ -1,10 +1,11 @@
 variable "name_prefix" {
-  type = string
+  type        = string
+  description = "Prefijo para los nombres de los recursos"
 }
 
 variable "aws_region" {
-  description = "Region para los nombres de servicio de los endpoints"
   type        = string
+  description = "Region para los nombres de servicio de los endpoints"
 }
 
 variable "vpc_cidr" {
@@ -13,24 +14,23 @@ variable "vpc_cidr" {
 }
 
 variable "public_subnet_cidrs" {
-  description = "Subredes publicas (AZ-a, AZ-b)"
   type        = list(string)
+  description = "Lista de bloques CIDR para las 2 subredes públicas"
   default     = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
 variable "private_subnet_cidrs" {
-  description = "Subredes privadas (AZ-a, AZ-b)"
   type        = list(string)
+  description = "Lista de bloques CIDR para las 2 subredes privadas"
   default     = ["10.0.11.0/24", "10.0.12.0/24"]
 }
 
 variable "enable_nat_gateway" {
-  description = "Crear un NAT Gateway por AZ"
   type        = bool
-  default     = false
+  description = "Determina si se despliegan los NAT Gateways"
 }
 
 variable "bucket_arn" {
-  description = "Bucket permitido en la politica del endpoint de S3"
   type        = string
+  description = "ARN del bucket S3 para restringir el endpoint de S3"
 }
