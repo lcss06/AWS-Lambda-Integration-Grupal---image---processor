@@ -1,8 +1,8 @@
 resource "aws_vpc" "main" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
-  tags                 = { Name = "image-processor-${var.environment}-vpc" }
+  tags                 = { Name = "${var.name_prefix}-vpc" }
 }
 
 data "aws_availability_zones" "available" {
@@ -17,7 +17,7 @@ resource "aws_subnet" "public" {
   cidr_block              = var.public_subnet_cidrs[count.index]
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
-  tags                    = { Name = "image-processor-${var.environment}-public-${count.index + 1}" }
+  tags                    = { Name = "${var.name_prefix}-public-${count.index + 1}" }
 }
 
 resource "aws_subnet" "private" {
@@ -25,12 +25,12 @@ resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.private_subnet_cidrs[count.index]
   availability_zone = data.aws_availability_zones.available.names[count.index]
-  tags              = { Name = "image-processor-${var.environment}-private-${count.index + 1}" }
+  tags              = { Name = "${var.name_prefix}-private-${count.index + 1}" }
 }
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
-  tags   = { Name = "image-processor-${var.environment}-igw" }
+  tags   = { Name = "${var.name_prefix}-igw" }
 }
 
 resource "aws_route_table" "public" {
@@ -39,7 +39,7 @@ resource "aws_route_table" "public" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
-  tags = { Name = "image-processor-${var.environment}-rt-public" }
+  tags = { Name = "${var.name_prefix}-rt-public" }
 }
 
 resource "aws_route_table_association" "public" {
@@ -57,13 +57,13 @@ resource "aws_nat_gateway" "nat" {
   count         = var.enable_nat_gateway ? 2 : 0
   allocation_id = aws_eip.nat[count.index].id
   subnet_id     = aws_subnet.public[count.index].id
-  tags          = { Name = "image-processor-${var.environment}-nat-${count.index + 1}" }
+  tags          = { Name = "${var.name_prefix}-nat-${count.index + 1}" }
 }
 
 resource "aws_route_table" "private" {
   count  = 2
   vpc_id = aws_vpc.main.id
-  tags   = { Name = "image-processor-${var.environment}-rt-private-${count.index + 1}" }
+  tags   = { Name = "${var.name_prefix}-rt-private-${count.index + 1}" }
 }
 
 resource "aws_route" "private_nat" {
@@ -80,19 +80,19 @@ resource "aws_route_table_association" "private" {
 }
 
 resource "aws_security_group" "upload_lambda" {
-  name        = "image-processor-${var.environment}-sg-upload"
+  name        = "${var.name_prefix}-sg-upload"
   description = "SG para Lambda de Upload"
   vpc_id      = aws_vpc.main.id
 }
 
 resource "aws_security_group" "crop_lambda" {
-  name        = "image-processor-${var.environment}-sg-crop"
+  name        = "${var.name_prefix}-sg-crop"
   description = "SG para Lambda de Crop"
   vpc_id      = aws_vpc.main.id
 }
 
 resource "aws_security_group" "vpc_endpoint_sqs" {
-  name        = "image-processor-${var.environment}-sg-vpce-sqs"
+  name        = "${var.name_prefix}-sg-vpce-sqs"
   description = "SG para el endpoint de SQS"
   vpc_id      = aws_vpc.main.id
 }
