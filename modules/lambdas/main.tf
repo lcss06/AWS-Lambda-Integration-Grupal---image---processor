@@ -11,7 +11,7 @@ locals {
 
   # politicas administradas por AWS que necesitan las dos lambdas
   managed_policies = [
-    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",    # escribir logs
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",     # escribir logs
     "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole", # crear interfaces de red en la VPC
   ]
 }
@@ -200,10 +200,10 @@ resource "aws_lambda_function" "crop" {
 # ---------------------------------------------------------------------------
 
 resource "aws_lambda_event_source_mapping" "crop_sqs" {
-  event_source_arn = var.queue_arn
-  function_name    = aws_lambda_function.crop.arn
-  batch_size       = 5
+  event_source_arn        = var.queue_arn
+  function_name           = aws_lambda_function.crop.arn
+  batch_size              = 5
   function_response_types = ["ReportBatchItemFailures"]
-  depends_on = [aws_iam_role_policy.crop]
+  depends_on              = [aws_iam_role_policy.crop]
 }
 
